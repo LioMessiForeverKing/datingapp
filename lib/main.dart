@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'screens/home_screen.dart';
+import 'screens/quiz_screen.dart';
 
 void main() async {
   await Supabase.initialize(
@@ -70,10 +70,10 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
           _userId = newUserId;
         });
         
-        // Navigate to HomeScreen when user logs in
+        // Navigate to QuizScreen when user logs in
         if (newUserId != null) {
           Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => HomeScreen(userId: newUserId)),
+            MaterialPageRoute(builder: (context) => QuizScreen(userId: newUserId)),
           );
         }
       }
