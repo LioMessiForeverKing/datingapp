@@ -45,6 +45,17 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  Future<void> _signOut() async {
+    try {
+      await supabase.auth.signOut();
+      // The state will be updated automatically through the auth state listener
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error signing out: $error')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,31 +64,42 @@ class _HomePageState extends State<HomePage> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(_userId ?? 'Not signed in'),
-            ElevatedButton(onPressed: () async {
-            const webClientId = '153680830303-6odds05j2321o48k9ddrv62nidh00icv.apps.googleusercontent.com';
-            const iosClientId = '153680830303-rj6m12gos6qn1bms5f9t6ookdef8k2g9.apps.googleusercontent.com';
-            final GoogleSignIn googleSignIn = GoogleSignIn(
-              clientId: iosClientId,
-              serverClientId: webClientId,
-            );
-            final googleUser = await googleSignIn.signIn();
-            final googleAuth = await googleUser!.authentication;
-            final accessToken = googleAuth.accessToken;
-            final idToken = googleAuth.idToken;
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(onPressed: () async {
+                const webClientId = '153680830303-6odds05j2321o48k9ddrv62nidh00icv.apps.googleusercontent.com';
+                const iosClientId = '153680830303-rj6m12gos6qn1bms5f9t6ookdef8k2g9.apps.googleusercontent.com';
+                final GoogleSignIn googleSignIn = GoogleSignIn(
+                  clientId: iosClientId,
+                  serverClientId: webClientId,
+                );
+                final googleUser = await googleSignIn.signIn();
+                final googleAuth = await googleUser!.authentication;
+                final accessToken = googleAuth.accessToken;
+                final idToken = googleAuth.idToken;
 
-            if (accessToken == null) {
-              throw 'No Access Token found.';
-            }
-            if (idToken == null) {
-              throw 'No ID Token found.';
-            }
+                if (accessToken == null) {
+                  throw 'No Access Token found.';
+                }
+                if (idToken == null) {
+                  throw 'No ID Token found.';
+                }
 
-            await supabase.auth.signInWithIdToken(
-              provider: OAuthProvider.google,
-              idToken: idToken,
-              accessToken: accessToken,
-            );
-            }, child: Text('Sign Up')),
+                await supabase.auth.signInWithIdToken(
+                  provider: OAuthProvider.google,
+                  idToken: idToken,
+                  accessToken: accessToken,
+                );
+                }, child: Text('Sign In')),
+                SizedBox(width: 16),
+                if (_userId != null)
+                  ElevatedButton(
+                    onPressed: _signOut,
+                    child: Text('Sign Out'),
+                  ),
+              ],
+            ),
           ],
         ),
       ),
