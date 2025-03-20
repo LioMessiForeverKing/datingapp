@@ -50,6 +50,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       body: Center(
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             Text(_userId ?? 'Not signed in'),
             ElevatedButton(onPressed: () async {
